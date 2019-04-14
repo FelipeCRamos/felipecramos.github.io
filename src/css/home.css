@@ -1,0 +1,124 @@
+/* IBM Plex Sans */
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,100i,200,200i,300,300i,400,400i,500,600,700');
+
+* { box-sizing: border-box; }
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+.intro {
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    background: #111;
+    background-image: url(../../assets/keyboard-wallpaper-masked.png);
+    background-size: 70em;
+    background-repeat: no-repeat;
+    background-position-y: 100%;
+    background-position-x: 50%;
+}
+
+.inner {
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    color: #eee;
+    height: 100vh;
+}
+
+.content {
+    font-family: 'IBM Plex Sans';
+    font-weight: 100;
+    grid-column: 2 / 3;
+    grid-row: 2;
+    margin-top: 2em;
+    /* background: #666; */
+}
+
+.content > p {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 100;
+    margin: 0;
+}
+
+.content > h1 {
+    text-align: center;
+    font-size: 5em;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 100;
+    margin: 0;
+}
+
+.content > h1 > b {
+    font-weight: 500;
+}
+
+.badge {
+    display: grid;
+    grid-template-columns: 1fr 1em 1fr;
+    grid-gap: 1em;
+}
+
+.bracket {
+    display: flex;
+    font-size: 5.4em;
+    margin: 0;
+    font-weight: 100;
+    align-content: center;
+    justify-content: center;
+}
+
+.caps,
+.caps > h4 {
+    text-align: right;
+    font-weight: 100;
+    font-size: 1.2em;
+    margin: 0;
+    margin-top: 0.2em;
+}
+
+.work {
+    text-align: left;
+    /* background: #666; */
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+
+.work > h4 {
+    font-weight: 100;
+    font-size: 1.9em;
+}
+
+footer {
+    /* color: #eee; */
+    font-family: 'IBM Plex Sans';
+    grid-row: 3;
+    grid-column: 2;
+    display: flex;
+    align-items: flex-end;
+}
+
+footer > p {
+    text-align: right;
+    color: rgb(255, 255, 255, 0.4);
+    width: 100vw;
+    margin: 0;
+    padding: 1em;
+    font-size: 0.9em;
+}
+
+footer > p > a {
+    color: rgb(255, 255, 255, 0.7);
+    text-decoration: none;
+}
+
+footer > p > a:hover {
+    text-decoration: underline;
+}
