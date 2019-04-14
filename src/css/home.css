@@ -1,5 +1,5 @@
 /* IBM Plex Sans */
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,100i,200,200i,300,300i,400,400i,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:100,300,500');
 
 * { box-sizing: border-box; }
 html, body {
@@ -15,7 +15,7 @@ html, body {
     top: 0;
     left: 0;
     background: #111;
-    background-image: url(../../assets/keyboard-wallpaper-masked.png);
+    background-image: url(../../assets/keyboard-wallpaper-masked-opt.jpg);
     background-size: 70em;
     background-repeat: no-repeat;
     background-position-y: 100%;
