@@ -1,1 +1,11 @@
+node_modules/
+dist/
+.astro/
 .DS_Store
+
+# Private. These contain client details that the public site leaves out.
+# GitHub Pages on a free account needs a public repo, and git history is permanent.
+felipe-ramos-cv.pdf
+private/
+PLAN.md
+PROGRESS.md

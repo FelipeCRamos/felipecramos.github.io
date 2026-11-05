@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import { ui } from '../i18n';
+const t = ui.en;
+---
+<Base lang="en" title="Page not found · Felipe Ramos" description={t.siteDescription} path="/" ogKey="home">
+  <main id="content" class="section wrap" style="border:0;display:grid;gap:14px">
+    <h1 style="font-size:64px;text-transform:uppercase">{t.notFoundTitle}</h1>
+    <p>{t.notFoundBody}</p>
+    <p><a href="/">{t.notFoundLink}</a></p>
+  </main>
+</Base>

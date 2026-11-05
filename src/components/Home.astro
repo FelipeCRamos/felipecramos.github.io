@@ -1,0 +1,155 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Situations from './Situations.astro';
+import PostList from './PostList.astro';
+import { postsFor } from '../blog';
+import { career, contact, interests, ownership, sideProjects, together, toolbox, wins } from '../data/profile';
+import { localePath, ui, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const studies = (await getCollection('work', (e) => e.id.startsWith(`${lang}/`))).sort((a, b) => a.data.order - b.data.order);
+const slugOf = (id: string) => id.split('/')[1];
+const latestPosts = (await postsFor(lang)).slice(0, 3);
+const titleBySlug = Object.fromEntries(studies.map((s) => [slugOf(s.id), s.data.title]));
+---
+<Base lang={lang} title="Felipe Ramos · Senior Mobile Engineer" description={t.siteDescription} path="/" ogKey="home">
+  <main id="content">
+    <section class="cover">
+      <div class="wrap">
+        <div class="cover-main">
+          <span class="tag">{t.heroTag}</span>
+          <h1>Felipe<br />Ramos</h1>
+          <p class="line">{t.heroLine}</p>
+          <div class="actions">
+            <a class="btn solid" href="#contact">{t.ctaContact}</a>
+          </div>
+        </div>
+        <div class="side">
+          <dl class="facts" aria-label={t.factsTitle}>
+            {t.facts.map(([k, v]) => (
+              <div class="facts-row"><dt>{k}</dt><dd>{v}</dd></div>
+            ))}
+          </dl>
+          <div class="ownership">
+            <span class="tag">{t.ownershipTitle}</span>
+            <ul class="chk">
+              {ownership.map((p, i) => (
+                <li style={`--n:${i}`}><span>{p.item[lang]}</span><i aria-hidden="true"></i><b>{p.response[lang]}</b></li>
+              ))}
+              <li class="final" style={`--n:${ownership.length}`}><span>{lang === 'en' ? 'Next step' : 'Próximo passo'}</span><i aria-hidden="true"></i><b><a href="#contact">{t.ctaContact.toUpperCase()}</a></b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Situations lang={lang} />
+
+    <section class="section wrap" id="work">
+      <div class="section-head"><h2>{t.workTitle}</h2></div>
+      <div class="work-list">
+        {studies.map((s) => (
+          <a class="work-item" href={localePath(lang, `/work/${slugOf(s.id)}`)}>
+            <span class="tag">{s.data.context}</span>
+            <h3>{s.data.title}</h3>
+            <p>{s.data.situation}</p>
+            <p class="res">{s.data.result}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section wrap" id="career">
+      <div class="section-head"><h2>{t.careerTitle}</h2></div>
+      <div class="log">
+        <table>
+          <thead><tr><th>{t.careerHead[0]}</th><th>{t.careerHead[1]}</th><th>{t.careerHead[2]}</th><th>{t.careerHead[3]}</th></tr></thead>
+          <tbody>
+            {career.map((j) => (
+              <tr><td>{j.dates}</td><td>{j.role[lang]}</td><td class="co">{j.where}</td><td>{j.note[lang]}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section wrap" id="toolbox">
+      <div class="section-head"><h2>{t.toolboxTitle}</h2></div>
+      <dl class="tools">
+        {toolbox.map((g) => (
+          <div>
+            <dt>{g.group[lang]}</dt>
+            <dd>{g.items}</dd>
+            {g.slug && <dd class="see">{t.seeItIn} <a href={localePath(lang, `/work/${g.slug}`)}>{titleBySlug[g.slug]}</a></dd>}
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="section wrap" id="off">
+      <div class="section-head"><h2>{t.offTitle}</h2></div>
+      <div class="three">
+        <div class="stack"><h3>{t.interestsTitle}</h3><p>{interests[lang]}</p></div>
+        <div class="stack"><h3>{t.winsTitle}</h3><ul>{wins.map((w) => <li>{w[lang]}</li>)}</ul></div>
+        <div class="stack">
+          <h3>{t.sideTitle}</h3>
+          <ul>{sideProjects.map((p) => <li><a href={p.url}>{p.name}</a>. {p.about[lang]}</li>)}</ul>
+        </div>
+      </div>
+    </section>
+
+    {latestPosts.length > 0 && (
+      <section class="section wrap" id="blog">
+        <div class="section-head"><h2>{t.blogLatest}</h2></div>
+        <PostList lang={lang} posts={latestPosts} />
+        <a class="more" href={localePath(lang, '/blog')}>{t.blogAll} ›</a>
+      </section>
+    )}
+
+    <section class="section wrap" id="together">
+      <div class="section-head"><h2>{t.togetherTitle}</h2></div>
+      <div class="two">
+        {together.map((o) => (
+          <div class="offer">
+            <h3>{o.title[lang]}</h3>
+            <p>{o.body[lang]}</p>
+            <ul>{o.fits.map((f) => <li>{f[lang]}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <h2>{t.contactTitle}</h2>
+        <p>{t.contactIntro}</p>
+        <div class="contact-row">
+          <a class="contact-mail" href={`mailto:${contact.email}`}>{contact.email}</a>
+          <button class="copy" type="button" data-copy={contact.email} data-done={t.copied} hidden>{t.copy}</button>
+        </div>
+        <div class="contact-row">
+          <a href={contact.linkedin}>LinkedIn</a>
+          <a href={contact.github}>GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
+    if (!navigator.clipboard) return;
+    b.hidden = false;
+    const label = b.textContent;
+    b.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy!);
+        b.textContent = b.dataset.done!;
+        setTimeout(() => { b.textContent = label; }, 1800);
+      } catch { /* The address stays visible and selectable. */ }
+    });
+  });
+</script>

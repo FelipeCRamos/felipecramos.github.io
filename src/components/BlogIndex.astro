@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import { postsFor } from '../blog';
+import { ui, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const posts = await postsFor(lang);
+---
+<Base lang={lang} title={`${t.blogTitle} · Felipe Ramos`} description={t.blogIntro} path="/blog" ogKey="home">
+  <main id="content">
+    <section class="study-head">
+      <div class="wrap">
+        <h1>{t.blogTitle}</h1>
+        <p>{t.blogIntro}</p>
+      </div>
+    </section>
+    <div class="wrap post-body" style="max-width:1160px">
+      {posts.length ? <PostList lang={lang} posts={posts} /> : <p class="muted">{t.blogEmpty}</p>}
+    </div>
+  </main>
+</Base>

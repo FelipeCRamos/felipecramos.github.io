@@ -1,0 +1,74 @@
+---
+import { situations } from '../data/profile';
+import { localePath, ui, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+<section class="section wrap" id="situations">
+  <div class="section-head">
+    <h2>{t.situationsTitle}</h2>
+    <p class="muted">{t.situationsIntro}</p>
+  </div>
+  <div class="picker" data-picker>
+    <ul class="sit-index">
+      {situations.map((s) => (
+        <li><a href={`#s-${s.id}`} data-sit={s.id}>{s.title[lang]}<span aria-hidden="true">›</span></a></li>
+      ))}
+    </ul>
+    <div class="cards">
+      {situations.map((s) => (
+        <article class="card" id={`s-${s.id}`}>
+          <h3 class="card-head">{s.title[lang]}</h3>
+          <div class="card-body">
+            <p class="card-where">{s.where[lang]}</p>
+            <p class="card-cond">{s.condition[lang]}</p>
+            <ul class="chk">
+              {s.steps.map((step) => (
+                <li><span>{step.label[lang]}</span><i aria-hidden="true"></i><b>{step.result[lang]}</b></li>
+              ))}
+            </ul>
+            {s.slug && <a class="card-link" href={localePath(lang, `/work/${s.slug}`)}>{t.readCase} ›</a>}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Without JavaScript every card stays visible and the links jump to them.
+  // With it, the list works as a picker that shows one card at a time.
+  const picker = document.querySelector<HTMLElement>('[data-picker]');
+  if (picker) {
+    const links = [...picker.querySelectorAll<HTMLAnchorElement>('[data-sit]')];
+    const cards = [...picker.querySelectorAll<HTMLElement>('.card')];
+    const stacked = () => window.matchMedia('(max-width: 860px)').matches;
+
+    const show = (id: string, scroll: boolean) => {
+      cards.forEach((c) => { c.hidden = c.id !== `s-${id}`; });
+      links.forEach((l) => l.setAttribute('aria-current', String(l.dataset.sit === id)));
+      if (scroll && stacked()) document.getElementById(`s-${id}`)?.scrollIntoView();
+    };
+
+    links.forEach((l) => {
+      l.addEventListener('click', (e) => {
+        e.preventDefault();
+        show(l.dataset.sit!, true);
+        history.replaceState(null, '', `#s-${l.dataset.sit}`);
+      });
+    });
+
+    const fromHash = () => {
+      const id = location.hash.startsWith('#s-') ? location.hash.slice(3) : '';
+      return links.some((l) => l.dataset.sit === id) ? id : '';
+    };
+    show(fromHash() || links[0].dataset.sit!, false);
+    if (fromHash()) document.getElementById('situations')?.scrollIntoView();
+    window.addEventListener('hashchange', () => {
+      const id = fromHash();
+      if (id) show(id, true);
+    });
+  }
+</script>

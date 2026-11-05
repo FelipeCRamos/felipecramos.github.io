@@ -1,0 +1,48 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { findTranslation, formatDate, getPosts, readingMinutes, type Post } from '../../blog';
+import { localePath, ui, type Lang } from '../../i18n';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, translation: findTranslation(post, posts) } }));
+}
+
+const { post, translation } = Astro.props as { post: Post; translation?: Post };
+const { Content } = await render(post);
+const d = post.data;
+const lang: Lang = d.lang;
+const other: Lang = lang === 'en' ? 'pt' : 'en';
+const t = ui[lang];
+const self = `/blog/${post.id}/`;
+const altPath = translation ? `/blog/${translation.id}/` : undefined;
+---
+<Base
+  lang={lang}
+  title={`${d.title} · Felipe Ramos`}
+  description={d.description}
+  path="/blog"
+  ogKey="home"
+  canonicalPath={self}
+  altHref={altPath ?? localePath(other, '/blog')}
+  alternates={{ [lang]: self, ...(altPath ? { [other]: altPath } : {}) }}
+>
+  <main id="content">
+    <section class="study-head">
+      <div class="wrap">
+        <a href={localePath(lang, '/blog')}>‹ {t.blogBack}</a>
+        <h1>{d.title}{d.draft && ` (${t.draft})`}</h1>
+        <div class="post-meta">
+          <time datetime={d.date.toISOString().slice(0, 10)}>{formatDate(d.date, lang)}</time>
+          <span>{t.readTime(readingMinutes(post.body))}</span>
+          {altPath && <a href={altPath} hreflang={ui[other].htmlLang}>{t.readOther}</a>}
+        </div>
+      </div>
+    </section>
+    <div class="wrap post-body">
+      <article class="prose"><Content /></article>
+      {d.tags.length > 0 && <ul class="post-tags">{d.tags.map((tag) => <li>{tag}</li>)}</ul>}
+    </div>
+  </main>
+</Base>

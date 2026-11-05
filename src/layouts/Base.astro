@@ -1,0 +1,93 @@
+---
+import '../styles/global.css';
+import { contact } from '../data/profile';
+import { getPosts } from '../blog';
+import { localePath, ui, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** English path of this page, such as "/blog". Used for language links. */
+  path: string;
+  /** Share image key: public/og/<lang>-<ogKey>.png */
+  ogKey: string;
+  /** Blog posts have one address per language, so they set these instead of using `path`. */
+  canonicalPath?: string;
+  altHref?: string;
+  alternates?: Partial<Record<Lang, string>>;
+}
+
+const { lang, title, description, path, ogKey, canonicalPath, altHref, alternates } = Astro.props;
+const t = ui[lang];
+const other: Lang = lang === 'en' ? 'pt' : 'en';
+const site = Astro.site!;
+// GitHub Pages serves folders with a trailing slash, so canonical addresses use one too.
+const pageUrl = (l: Lang) => new URL(localePath(l, path).replace(/\/?$/, '/'), site).href;
+const canonical = canonicalPath ? new URL(canonicalPath, site).href : pageUrl(lang);
+const abs = (p?: string) => (p ? new URL(p, site).href : undefined);
+const enUrl = alternates ? abs(alternates.en) : pageUrl('en');
+const ptUrl = alternates ? abs(alternates.pt) : pageUrl('pt');
+const hasPosts = (await getPosts()).length > 0;
+const ogImage = new URL(`/og/${lang}-${ogKey}.png`, site).href;
+const home = localePath(lang, '/');
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Felipe da Costa Ramos Filho',
+  alternateName: 'Felipe Ramos',
+  jobTitle: 'Senior Mobile Engineer',
+  url: new URL('/', site).href,
+  address: { '@type': 'PostalAddress', addressLocality: 'Natal', addressCountry: 'BR' },
+  sameAs: [contact.github, contact.linkedin],
+};
+---
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {enUrl && <link rel="alternate" hreflang="en" href={enUrl} />}
+    {ptUrl && <link rel="alternate" hreflang="pt-BR" href={ptUrl} />}
+    <link rel="alternate" hreflang="x-default" href={enUrl ?? canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#042b59" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'pt_BR'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
+  </head>
+  <body>
+    <a class="skip" href="#content">{t.skip}</a>
+    <header class="bar">
+      <div class="wrap">
+        <a class="brand" href={home}>Felipe Ramos</a>
+        <nav aria-label="Main">
+          <a href={`${home}#situations`}>{t.nav.situations}</a>
+          <a href={`${home}#work`}>{t.nav.work}</a>
+          <a href={`${home}#career`}>{t.nav.career}</a>
+          <a href={`${home}#contact`}>{t.nav.contact}</a>
+          {hasPosts && <a href={localePath(lang, '/blog')}>{t.nav.blog}</a>}
+          <a class="lang" href={altHref ?? localePath(other, path)} hreflang={ui[other].htmlLang} lang={ui[other].htmlLang}>{t.otherLang}</a>
+        </nav>
+      </div>
+    </header>
+    <slot />
+    <footer>
+      <div class="wrap">
+        <span>© {new Date().getFullYear()} Felipe Ramos</span>
+        <span><a href={contact.github}>GitHub</a> · <a href={contact.linkedin}>LinkedIn</a></span>
+      </div>
+    </footer>
+  </body>
+</html>

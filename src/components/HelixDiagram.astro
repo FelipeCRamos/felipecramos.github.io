@@ -1,0 +1,30 @@
+---
+import type { Lang } from '../i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const copy = {
+  en: { aria: 'The pilot app exchanges Protobuf messages over Bluetooth LE with aircraft firmware. In test, a BFF that emulates the firmware takes its place.', app: 'Pilot app', appSub: 'Flutter', fw: 'Aircraft firmware', fwSub: 'tested by client team', emu: 'Firmware emulator', emuSub: 'BFF, in test', link: 'BLE + Protobuf', test: 'same flows, no aircraft', note: 'My own simplified drawing, not the production design.' },
+  pt: { aria: 'O app do piloto troca mensagens Protobuf via Bluetooth LE com o firmware da aeronave. Em teste, um BFF que emula o firmware toma o lugar dele.', app: 'App do piloto', appSub: 'Flutter', fw: 'Firmware da aeronave', fwSub: 'validado pelo cliente', emu: 'Emulador de firmware', emuSub: 'BFF, em teste', link: 'BLE + Protobuf', test: 'mesmos fluxos, sem aeronave', note: 'Desenho simplificado feito por mim, não é o projeto de produção.' },
+}[lang];
+---
+<figure class="diagram" style="margin:0">
+  <svg viewBox="0 0 640 220" role="img" aria-label={copy.aria}>
+    <rect class="box" x="12" y="72" width="150" height="70" />
+    <text x="87" y="102" text-anchor="middle" font-size="14" font-weight="700">{copy.app}</text>
+    <text x="87" y="122" text-anchor="middle" font-size="12" class="sub">{copy.appSub}</text>
+
+    <rect class="box" x="438" y="16" width="190" height="70" />
+    <text x="533" y="46" text-anchor="middle" font-size="14" font-weight="700">{copy.fw}</text>
+    <text x="533" y="66" text-anchor="middle" font-size="12" class="sub">{copy.fwSub}</text>
+
+    <rect class="emu" x="438" y="130" width="190" height="70" />
+    <text x="533" y="160" text-anchor="middle" font-size="14" font-weight="700" class="emu-text">{copy.emu}</text>
+    <text x="533" y="180" text-anchor="middle" font-size="12" class="emu-text">{copy.emuSub}</text>
+
+    <path class="wire" d="M162 95 C 270 95, 320 51, 438 51" />
+    <path class="wire-dash" d="M162 120 C 270 120, 320 165, 438 165" />
+    <text x="300" y="56" text-anchor="middle" font-size="12">{copy.link}</text>
+    <text x="300" y="176" text-anchor="middle" font-size="12" class="sub">{copy.test}</text>
+  </svg>
+  <figcaption class="muted" style="font-size:13px;margin-top:8px">{copy.note}</figcaption>
+</figure>

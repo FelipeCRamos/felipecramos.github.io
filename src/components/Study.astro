@@ -1,0 +1,44 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import HelixDiagram from './HelixDiagram.astro';
+import { localePath, ui, type Lang } from '../i18n';
+
+interface Props { lang: Lang; slug: string }
+const { lang, slug } = Astro.props;
+const t = ui[lang];
+const entry = await getEntry('work', `${lang}/${slug}`);
+if (!entry) throw new Error(`Missing case study: ${lang}/${slug}`);
+const { Content } = await render(entry);
+const d = entry.data;
+---
+<Base lang={lang} title={`${d.title} · Felipe Ramos`} description={d.situation} path={`/work/${slug}`} ogKey={slug}>
+  <main id="content">
+    <section class="study-head">
+      <div class="wrap">
+        <a href={`${localePath(lang, '/')}#situations`}>‹ {t.back}</a>
+        <span class="tag">{d.context}</span>
+        <h1>{d.title}</h1>
+      </div>
+    </section>
+    <div class="wrap study-grid">
+      <article class="prose">
+        {slug === 'pivotal-helix' && <HelixDiagram lang={lang} />}
+        <Content />
+      </article>
+      <aside class="study-side">
+        <div class="panel">
+          <div class="panel-head">{t.summary}</div>
+          <div class="panel-body"><ul class="chk" style="font-size:13px">{d.summary.map((line) => <li>{line}</li>)}</ul></div>
+        </div>
+        <div class="panel">
+          <dl class="panel-body">
+            <dt>{t.role}</dt><dd>{d.role}</dd>
+            <dt>{t.period}</dt><dd>{d.period}</dd>
+            <dt>{t.stack}</dt><dd><ul class="chips">{d.stack.map((s) => <li>{s}</li>)}</ul></dd>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Base>

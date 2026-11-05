@@ -1,0 +1,19 @@
+---
+import { formatDate, type Post } from '../blog';
+import { ui, type Lang } from '../i18n';
+
+interface Props { lang: Lang; posts: Post[] }
+const { lang, posts } = Astro.props;
+---
+<ul class="post-list">
+  {posts.map((p) => (
+    <li>
+      <a href={`/blog/${p.id}/`} hreflang={ui[p.data.lang].htmlLang}>
+        <time datetime={p.data.date.toISOString().slice(0, 10)}>{formatDate(p.data.date, lang)}</time>
+        <h3 lang={ui[p.data.lang].htmlLang}>{p.data.title}{p.data.draft && ` (${ui[lang].draft})`}</h3>
+        {p.data.lang !== lang ? <span class="post-lang">{p.data.lang.toUpperCase()}</span> : <span></span>}
+        <p lang={ui[p.data.lang].htmlLang}>{p.data.description}</p>
+      </a>
+    </li>
+  ))}
+</ul>

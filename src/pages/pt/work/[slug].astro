@@ -1,0 +1,6 @@
+---
+import Study from '../../../components/Study.astro';
+import { WORK_SLUGS } from '../../../i18n';
+export const getStaticPaths = () => WORK_SLUGS.map((slug) => ({ params: { slug } }));
+---
+<Study lang="pt" slug={Astro.params.slug} />
