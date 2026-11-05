@@ -17,7 +17,7 @@ export function localePath(lang: Lang, path = '/'): string {
 export const ui = {
   en: {
     htmlLang: 'en',
-    otherLang: 'Português',
+    otherLang: 'Ver em Português',
     otherLangShort: 'PT',
     nav: { situations: 'Situations', work: 'Work', career: 'Career', contact: 'Contact', blog: 'Blog' },
     skip: 'Skip to content',
@@ -73,7 +73,7 @@ export const ui = {
   },
   pt: {
     htmlLang: 'pt-BR',
-    otherLang: 'English',
+    otherLang: 'See in English',
     otherLangShort: 'EN',
     nav: { situations: 'Situações', work: 'Projetos', career: 'Carreira', contact: 'Contato', blog: 'Blog' },
     skip: 'Pular para o conteúdo',
